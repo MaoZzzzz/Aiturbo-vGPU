@@ -1,0 +1,141 @@
+{%- set name = "2-measurement-imagenet" -%}
+{%- set model_name = "resnet50" -%}
+{%- set image = "mps-tensorflow-gpu-experiment-tir:latest" -%}
+{%- set batch_size = "110" -%}
+{%- set num_worker = "1" -%}
+{%- set num_ps = "1" -%}
+{%- set ps_cpu = "1" -%}
+{%- set ps_gpu = "100" -%}
+{%- set ps_gmem = "44" -%}
+{%- set worker_cpu = "1" -%}
+{%- set worker_gpu = "100" -%}
+{%- set worker_gmem = "44" -%}
+{%- set replicas = {"worker": 1, "ps": 1} -%}
+{%- set ps_placement = "kube-master".split(",") -%}
+{%- set worker_placement = "kube-master".split(",") -%}
+{%- set ps_mount_dirs = "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-0/".split(",") -%}
+{%- set worker_mount_dirs = "/data/k8sworkdir/measurement/2-measurement-imagenet-worker-0/".split(",") -%}
+{%- set checkpoint = "/data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/" -%}
+{%- set num_step = "6060".split(",") -%}
+{%- set volume = "k8s-train-volume" -%}
+{%- set work_dir = "/tf/benchmarks/scripts/data/" -%}
+{%- set datasets = "imagenet" -%}
+{%- set sync_mode = "async" -%}
+
+
+{%- macro worker_hosts() -%}
+  {%- for i in range(num_worker) -%}
+    {%- if not loop.first -%},{%- endif -%}
+    {{ name }}-worker-{{ i }}
+  {%- endfor -%}
+{%- endmacro -%}
+
+{%- macro ps_hosts() -%}
+  {%- for i in range(num_ps) -%}
+    {%- if not loop.first -%},{%- endif -%}
+    {{ name }}-ps-{{ i }}
+  {%- endfor -%}
+{%- endmacro -%}
+
+{%- for job in ["worker", "ps"] -%}
+{%- for i in range(replicas[job]) -%}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: {{ name }}-{{ job }}-{{ i }}
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: {{ name }}
+        job: {{ job }}
+        task: "{{ i }}"
+    spec:
+      serviceAccountName: myserviceaccount
+      containers:
+      - name: {{ name }}
+        image: {{ image }}
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "{{ i }}"
+        - name: SYNC_MODE
+          value: "{{ sync_mode }}"
+        - name: JOB_NAME
+          value: "{{ name }}"
+        - name: MODEL_NAME
+          value: "{{ model_name }}"
+        - name: NUM_WORKER
+          value: "{{ num_worker }}"
+        - name: NUM_SERVER
+          value: "{{ num_ps }}"
+        - name: ROLE
+          value: "{{ job }}"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "{{ datasets }}"
+        - name: WORK_DIR
+          value: "{{ work_dir }}"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+{%- if job == "worker" %}
+        - name: NUM_STEP
+          value: "{{ num_step[i] }}"
+{%- endif %}
+        - name: BATCH_SIZE
+          value: "{{ batch_size }}"
+        resources:
+          limits:
+{%- if job == "worker" %}
+            tencent.com/vcuda-core: {{ worker_gpu }}
+            tencent.com/vcuda-memory: {{ worker_gmem }}
+{%- else %}
+            tencent.com/vcuda-core: {{ ps_gpu }}
+            tencent.com/vcuda-memory: {{ ps_gmem }}
+{%- endif %}
+          requests:
+{%- if job == "worker" %}
+            tencent.com/vcuda-core: {{ worker_gpu }}
+            tencent.com/vcuda-memory: {{ worker_gmem }}
+{%- else %}
+            tencent.com/vcuda-core: {{ ps_gpu }}
+            tencent.com/vcuda-memory: {{ ps_gmem }}
+{%- endif %}
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "{{ work_dir }}"
+          name: {{ volume }}
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: {{ checkpoint }}
+      - name: {{ volume }}
+        hostPath:
+{%- if job == "worker" %}
+          path: "{{ worker_mount_dirs[i] }}"
+{%- else %}
+          path: "{{ ps_mount_dirs[i] }}"
+{%- endif %}
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+{% endfor %}
+{%- endfor -%}

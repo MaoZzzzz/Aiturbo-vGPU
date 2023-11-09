@@ -1,0 +1,93 @@
+Name:               kube-node1
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=kube-node1
+                    kubernetes.io/os=linux
+                    nvidia-device-enable=enable
+Annotations:        flannel.alpha.coreos.com/backend-data: {"VNI":1,"VtepMAC":"66:49:a4:ae:1f:53"}
+                    flannel.alpha.coreos.com/backend-type: vxlan
+                    flannel.alpha.coreos.com/kube-subnet-manager: true
+                    flannel.alpha.coreos.com/public-ip: 192.168.1.135
+                    kubeadm.alpha.kubernetes.io/cri-socket: /var/run/dockershim.sock
+                    node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Thu, 09 Jun 2022 22:26:35 -0400
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  kube-node1
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 22 Jun 2022 04:10:52 -0400
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Thu, 09 Jun 2022 23:49:13 -0400   Thu, 09 Jun 2022 23:49:13 -0400   FlannelIsUp                  Flannel is running on this node
+  MemoryPressure       False   Wed, 22 Jun 2022 04:06:13 -0400   Thu, 09 Jun 2022 22:26:35 -0400   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Wed, 22 Jun 2022 04:06:13 -0400   Mon, 20 Jun 2022 21:10:14 -0400   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Wed, 22 Jun 2022 04:06:13 -0400   Thu, 09 Jun 2022 22:26:35 -0400   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Wed, 22 Jun 2022 04:06:13 -0400   Thu, 09 Jun 2022 23:40:10 -0400   KubeletReady                 kubelet is posting ready status. AppArmor enabled
+Addresses:
+  InternalIP:  192.168.1.135
+  Hostname:    kube-node1
+Capacity:
+  cpu:                       32
+  ephemeral-storage:         460376136Ki
+  hugepages-1Gi:             0
+  hugepages-2Mi:             0
+  memory:                    131677020Ki
+  pods:                      110
+  tencent.com/vcuda-core:    200
+  tencent.com/vcuda-memory:  88
+Allocatable:
+  cpu:                       32
+  ephemeral-storage:         424282646236
+  hugepages-1Gi:             0
+  hugepages-2Mi:             0
+  memory:                    131574620Ki
+  pods:                      110
+  tencent.com/vcuda-core:    200
+  tencent.com/vcuda-memory:  88
+System Info:
+  Machine ID:                 2f222fd7a5974ff0aec02bf56193cece
+  System UUID:                03000200-0400-0500-0006-000700080009
+  Boot ID:                    864d58c9-662b-4f44-a46b-c5b164a4ab3d
+  Kernel Version:             4.15.0-142-generic
+  OS Image:                   Ubuntu 16.04.7 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  docker://20.10.7
+  Kubelet Version:            v1.18.3
+  Kube-Proxy Version:         v1.18.3
+PodCIDR:                      10.244.1.0/24
+PodCIDRs:                     10.244.1.0/24
+Non-terminated Pods:          (11 in total)
+  Namespace                   Name                                     CPU Requests  CPU Limits  Memory Requests  Memory Limits  AGE
+  ---------                   ----                                     ------------  ----------  ---------------  -------------  ---
+  kube-system                 gpu-manager-daemonset-n2r77              0 (0%)        0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 kube-flannel-ds-hdq9n                    100m (0%)     100m (0%)   50Mi (0%)        50Mi (0%)      12d
+  kube-system                 kube-proxy-7ll7b                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         12d
+  mzz                         10-measurement-imagenet-ps-0-fx2cm       3 (9%)        3 (9%)      0 (0%)           0 (0%)         3m53s
+  mzz                         10-measurement-imagenet-ps-1-vtmqx       3 (9%)        3 (9%)      0 (0%)           0 (0%)         3m53s
+  mzz                         4-measurement-imagenet-ps-0-lwvml        5 (15%)       5 (15%)     0 (0%)           0 (0%)         7m32s
+  mzz                         4-measurement-imagenet-worker-1-cdgt8    3 (9%)        3 (9%)      0 (0%)           0 (0%)         7m32s
+  mzz                         5-measurement-imagenet-ps-0-sx5k4        3 (9%)        3 (9%)      0 (0%)           0 (0%)         3m47s
+  mzz                         5-measurement-imagenet-ps-1-xsqn9        3 (9%)        3 (9%)      0 (0%)           0 (0%)         3m47s
+  mzz                         7-measurement-imagenet-ps-0-jp4mk        5 (15%)       5 (15%)     0 (0%)           0 (0%)         7m25s
+  mzz                         7-measurement-imagenet-worker-0-mw48k    3 (9%)        3 (9%)      0 (0%)           0 (0%)         7m25s
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource                  Requests      Limits
+  --------                  --------      ------
+  cpu                       28100m (87%)  28100m (87%)
+  memory                    50Mi (0%)     50Mi (0%)
+  ephemeral-storage         0 (0%)        0 (0%)
+  hugepages-1Gi             0 (0%)        0 (0%)
+  hugepages-2Mi             0 (0%)        0 (0%)
+  tencent.com/vcuda-core    100           100
+  tencent.com/vcuda-memory  88            88
+Events:
+  Type     Reason             Age                      From                 Message
+  ----     ------             ----                     ----                 -------
+  Warning  MissingClusterDNS  4m25s (x18434 over 12d)  kubelet, kube-node1  kubelet does not have ClusterDNS IP configured and cannot create Pod using "ClusterFirst" policy. Falling back to "Default" policy.

@@ -1,0 +1,90 @@
+Name:               kube-master
+Roles:              master
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=kube-master
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/master=
+                    nvidia-device-enable=enable
+Annotations:        flannel.alpha.coreos.com/backend-data: {"VNI":1,"VtepMAC":"da:bf:29:2c:9e:93"}
+                    flannel.alpha.coreos.com/backend-type: vxlan
+                    flannel.alpha.coreos.com/kube-subnet-manager: true
+                    flannel.alpha.coreos.com/public-ip: 192.168.1.138
+                    kubeadm.alpha.kubernetes.io/cri-socket: /var/run/dockershim.sock
+                    node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Thu, 09 Jun 2022 10:23:58 -0400
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  kube-master
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 22 Jun 2022 04:39:53 -0400
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Thu, 09 Jun 2022 11:11:37 -0400   Thu, 09 Jun 2022 11:11:37 -0400   FlannelIsUp                  Flannel is running on this node
+  MemoryPressure       False   Wed, 22 Jun 2022 04:37:11 -0400   Thu, 09 Jun 2022 10:23:56 -0400   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Wed, 22 Jun 2022 04:37:11 -0400   Mon, 20 Jun 2022 01:29:30 -0400   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Wed, 22 Jun 2022 04:37:11 -0400   Thu, 09 Jun 2022 10:23:56 -0400   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Wed, 22 Jun 2022 04:37:11 -0400   Thu, 09 Jun 2022 11:11:44 -0400   KubeletReady                 kubelet is posting ready status. AppArmor enabled
+Addresses:
+  InternalIP:  192.168.1.138
+  Hostname:    kube-master
+Capacity:
+  cpu:                       32
+  ephemeral-storage:         460376136Ki
+  hugepages-1Gi:             0
+  hugepages-2Mi:             0
+  memory:                    131677028Ki
+  pods:                      110
+  tencent.com/vcuda-core:    200
+  tencent.com/vcuda-memory:  88
+Allocatable:
+  cpu:                       30
+  ephemeral-storage:         422135162588
+  hugepages-1Gi:             0
+  hugepages-2Mi:             0
+  memory:                    127380324Ki
+  pods:                      110
+  tencent.com/vcuda-core:    200
+  tencent.com/vcuda-memory:  88
+System Info:
+  Machine ID:                 c8beb26214d6423a9460f93df62e047b
+  System UUID:                03000200-0400-0500-0006-000700080009
+  Boot ID:                    e3172fbf-b15e-4984-a14f-ce83951819f5
+  Kernel Version:             4.15.0-142-generic
+  OS Image:                   Ubuntu 16.04.7 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  docker://20.10.7
+  Kubelet Version:            v1.18.3
+  Kube-Proxy Version:         v1.18.3
+PodCIDR:                      10.244.0.0/24
+PodCIDRs:                     10.244.0.0/24
+Non-terminated Pods:          (10 in total)
+  Namespace                   Name                                   CPU Requests  CPU Limits  Memory Requests  Memory Limits  AGE
+  ---------                   ----                                   ------------  ----------  ---------------  -------------  ---
+  kube-system                 coredns-66bff467f8-b9dmp               100m (0%)     0 (0%)      70Mi (0%)        170Mi (0%)     12d
+  kube-system                 coredns-66bff467f8-xlqdr               100m (0%)     0 (0%)      70Mi (0%)        170Mi (0%)     12d
+  kube-system                 etcd-kube-master                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 gpu-admission-b9d7b4d85-whnjt          0 (0%)        0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 gpu-manager-daemonset-wzfwq            0 (0%)        0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 kube-apiserver-kube-master             250m (0%)     0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 kube-controller-manager-kube-master    200m (0%)     0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 kube-flannel-ds-vl2ln                  100m (0%)     100m (0%)   50Mi (0%)        50Mi (0%)      12d
+  kube-system                 kube-proxy-6q9xt                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         12d
+  kube-system                 kube-scheduler-kube-master             100m (0%)     0 (0%)      0 (0%)           0 (0%)         12d
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource                  Requests    Limits
+  --------                  --------    ------
+  cpu                       850m (2%)   100m (0%)
+  memory                    190Mi (0%)  390Mi (0%)
+  ephemeral-storage         0 (0%)      0 (0%)
+  hugepages-1Gi             0 (0%)      0 (0%)
+  hugepages-2Mi             0 (0%)      0 (0%)
+  tencent.com/vcuda-core    0           0
+  tencent.com/vcuda-memory  0           0
+Events:                     <none>

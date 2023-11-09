@@ -1,0 +1,163 @@
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-worker-0
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: worker
+        task: "0"
+    spec:
+      serviceAccountName: myserviceaccount
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment-tir:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "0"
+        - name: SYNC_MODE
+          value: "async"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "1"
+        - name: NUM_SERVER
+          value: "1"
+        - name: ROLE
+          value: "worker"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: NUM_STEP
+          value: "6060"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+          requests:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-worker-0/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-0
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "0"
+    spec:
+      serviceAccountName: myserviceaccount
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment-tir:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "0"
+        - name: SYNC_MODE
+          value: "async"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "1"
+        - name: NUM_SERVER
+          value: "1"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+          requests:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-0/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+

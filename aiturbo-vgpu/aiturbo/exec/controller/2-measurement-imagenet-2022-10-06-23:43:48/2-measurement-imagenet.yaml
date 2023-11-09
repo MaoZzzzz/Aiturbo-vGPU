@@ -1,0 +1,993 @@
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-worker-0
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: worker
+        task: "0"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "0"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "worker"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: NUM_STEP
+          value: "3030"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+          requests:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-worker-0/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-worker-1
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: worker
+        task: "1"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "1"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "worker"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: NUM_STEP
+          value: "3030"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+          requests:
+            tencent.com/vcuda-core: 100
+            tencent.com/vcuda-memory: 44
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-worker-1/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-0
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "0"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "0"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-0/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-1
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "1"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "1"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-1/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-2
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "2"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "2"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-2/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-3
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "3"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "3"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-3/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-4
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "4"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "4"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-4/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-5
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "5"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "5"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-5/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-6
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "6"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "6"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-6/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-7
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "7"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "7"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-7/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-8
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "8"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "8"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-8/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: 2-measurement-imagenet-ps-9
+  namespace: mzz
+spec:
+  template:
+    metadata:
+      labels:
+        name: 2-measurement-imagenet
+        job: ps
+        task: "9"
+    spec:
+      serviceAccountName: myserviceaccount
+      nodeSelector:
+        kubernetes.io/hostname: kube-node1
+      containers:
+      - name: 2-measurement-imagenet
+        image: mps-tensorflow-gpu-experiment:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["/init.sh"]
+        env:
+        - name: TASK
+          value: "9"
+        - name: SYNC_MODE
+          value: "sync"
+        - name: JOB_NAME
+          value: "2-measurement-imagenet"
+        - name: MODEL_NAME
+          value: "resnet50"
+        - name: NUM_WORKER
+          value: "2"
+        - name: NUM_SERVER
+          value: "10"
+        - name: ROLE
+          value: "ps"
+        - name: PROG
+          value: "/tf/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py"
+        - name: DATASETS
+          value: "imagenet"
+        - name: WORK_DIR
+          value: "/tf/benchmarks/scripts/data/"
+        - name: DATA_DIR_IMAGENET
+          value: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+        - name: DATA_DIR_CIFAR
+          value: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+        - name: GPU_FREC
+          value: "1.0"
+        - name: BATCH_SIZE
+          value: "110"
+        resources:
+          limits:
+            cpu: 2
+          requests:
+            cpu: 2
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        - mountPath: "/data"
+          name: checkpoint
+        - mountPath: "/tf/benchmarks/scripts/data/"
+          name: k8s-train-volume
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/imagenet"
+          name: imagenet
+        - mountPath: "/tf/benchmarks/scripts/image_classification/data/cifar10"
+          name: cifar10
+      volumes:
+      - name: checkpoint
+        hostPath:
+          path: /data/k8sworkdir/measurement/2-measurement-imagenet-checkpoint/
+      - name: k8s-train-volume
+        hostPath:
+          path: "/data/k8sworkdir/measurement/2-measurement-imagenet-ps-9/"
+      - name: imagenet
+        hostPath:
+          path: "/home/tank/download/small_Imagenet"
+      - name: cifar10
+        hostPath:
+          path: "/home/tank/maozz/cifar-10-batches-py"
+      restartPolicy: Never
+---
+

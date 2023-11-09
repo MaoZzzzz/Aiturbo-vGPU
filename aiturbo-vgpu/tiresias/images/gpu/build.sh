@@ -1,0 +1,1 @@
+docker build -t mps-tensorflow-gpu-experiment-tir:latest -f mps-tensorflow-gpu-experiment.Dockerfile .

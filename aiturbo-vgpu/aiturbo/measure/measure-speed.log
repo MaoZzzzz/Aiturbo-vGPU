@@ -1,0 +1,31 @@
+2022-05-23 20:04:46,050 INFO: ------------------start job 1-------------------
+2022-05-23 20:04:46,051 INFO: time elapsed: 1.5779336293538412e-05 minutes
+2022-05-23 20:05:20,950 INFO: ------------------start job 1-------------------
+2022-05-23 20:05:20,950 INFO: time elapsed: 7.967154184977213e-06 minutes
+2022-05-23 20:06:21,109 INFO: detect Ctrl+C, exit...
+2022-05-23 20:07:00,517 INFO: ------------------start job 1-------------------
+2022-05-23 20:07:00,518 INFO: time elapsed: 1.5445550282796224e-05 minutes
+2022-05-23 20:08:02,618 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:09:02,965 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:10:03,288 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:10:59,206 INFO: detect Ctrl+C, exit...
+2022-05-23 20:11:54,197 INFO: ------------------start job 1-------------------
+2022-05-23 20:11:54,198 INFO: time elapsed: 4.065036773681641e-06 minutes
+2022-05-23 20:12:56,304 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:13:56,606 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:14:56,957 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:15:57,300 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:16:57,594 INFO: model name: resnet20, batch_size: 32, num_ps: 1, num_worker: 2, speed_list: [0.0, 0.0], sum_speed (samples/second): 0.0, sum_speed(batches/second): 0.0
+2022-05-23 20:16:57,893 INFO: sleep 3 seconds before next job
+2022-05-23 20:28:44,280 INFO: ------------------start job 1-------------------
+2022-05-23 20:28:44,280 INFO: time elapsed: 1.1746088663736979e-05 minutes
+2022-05-30 11:07:31,104 INFO: ------------------start job 1-------------------
+2022-05-30 11:07:31,104 INFO: time elapsed: 4.482269287109375e-06 minutes
+2022-05-30 18:14:38,739 INFO: ------------------start job 1-------------------
+2022-05-30 18:14:38,740 INFO: time elapsed: 1.712640126546224e-05 minutes
+2022-05-30 18:51:54,192 INFO: ------------------start job 1-------------------
+2022-05-30 18:51:54,192 INFO: time elapsed: 4.581610361735026e-06 minutes
+2022-05-30 20:31:23,181 INFO: ------------------start job 1-------------------
+2022-05-30 20:31:23,181 INFO: time elapsed: 3.969669342041015e-06 minutes
+2022-05-30 20:31:56,184 INFO: ------------------start job 1-------------------
+2022-05-30 20:31:56,184 INFO: time elapsed: 1.4074643452962239e-05 minutes
